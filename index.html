@@ -43,7 +43,7 @@
     const canvas=document.getElementById('magic'),ctx=canvas.getContext('2d');
     const scene=document.getElementById('scene'),pauseButton=document.getElementById('pause');
     const status=document.getElementById('status');
-    if(!ctx){status.textContent='Tu navegador no admite Canvas. Porque todas las reinas merecen flores amarillas.';scene.classList.add('revealed');return;}
+    if(!ctx){status.textContent='Tu navegador no admite Canvas.Feliz dia de las flores amarillas.';scene.classList.add('revealed');return;}
     const TAU=Math.PI*2,clamp=x=>Math.max(0,Math.min(1,x)),ease=x=>{x=clamp(x);return x*x*(3-2*x)},lerp=(a,b,t)=>a+(b-a)*t;
     let seed=74219;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
     const template=[];
@@ -123,7 +123,7 @@
         if(i%293===0&&twinkle>.92){ctx.globalAlpha=(twinkle-.92)*8;ctx.fillStyle='#fff1b4';ctx.fillRect(x-3,y,7,.6);ctx.fillRect(x,y-3,.6,7);}
       }
       ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
-      if(t>=6.5&&!revealed){revealed=true;scene.classList.add('revealed');status.textContent='Porque todas las reinas merecen flores amarillas.';}
+      if(t>=6.5&&!revealed){revealed=true;scene.classList.add('revealed');status.textContent='Feliz dia de las flores amarillas';}
     }
     function frame(now){if(!last)last=now;const dt=Math.min((now-last)/1000,.05);last=now;if(!paused&&!document.hidden)elapsed+=dt;draw(elapsed,paused?0:dt);if(!paused&&!document.hidden)frameId=requestAnimationFrame(frame);else frameId=0;}
     function run(){last=0;if(!frameId)frameId=requestAnimationFrame(frame);}

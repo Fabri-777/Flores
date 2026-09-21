@@ -24,6 +24,29 @@
     @media(max-height:520px) and (min-width:521px){.above{top:5%;font-size:25px}.below{bottom:19%;font-size:27px}.hint{display:none}.controls{bottom:10px}button{min-height:36px}}
     @media(prefers-reduced-motion:reduce){.dedication{transition:none}}
   </style>
+
+<style id="music-control-style">
+  #musicControl {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    border: 1px solid rgba(255, 215, 100, .55);
+    background: rgba(10, 8, 4, .72);
+    color: #f6d66b;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font: inherit;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  #musicControl:hover {
+    background: rgba(35, 27, 10, .82);
+  }
+</style>
+
 </head>
 <body>
   <main class="scene" id="scene" aria-label="Una dedicatoria de flores amarillas">
@@ -249,25 +272,41 @@
   })();
   </script>
 
-    <audio id="music" preload="auto" loop>
-      <source src="musica.mp3" type="audio/mpeg">
-    </audio>
+<audio id="music" loop preload="auto">
+  <source src="./musica.mp3" type="audio/mpeg">
+</audio>
 
+<button id="musicControl" type="button" aria-label="Reproducir música">▶ Música</button>
 
-    <script>
-      const music = document.getElementById('music');
-      let musicStarted = false;
+<script id="music-control-script">
+  const music = document.getElementById('music');
+  const musicControl = document.getElementById('musicControl');
 
-      function startMusic() {
-        if (musicStarted) return;
-        music.play().then(() => {
-          musicStarted = true;
-        }).catch(() => {});
+  async function toggleMusic() {
+    try {
+      if (music.paused) {
+        await music.play();
+        musicControl.textContent = '❚❚ Pausar música';
+      } else {
+        music.pause();
+        musicControl.textContent = '▶ Música';
       }
+    } catch (error) {
+      console.error('No se pudo reproducir la música:', error);
+      musicControl.textContent = '▶ Música';
+    }
+  }
 
-      document.addEventListener('pointerdown', startMusic, { once: true });
-      document.addEventListener('keydown', startMusic, { once: true });
-    </script>
+  musicControl.addEventListener('click', toggleMusic);
+
+  music.addEventListener('play', () => {
+    musicControl.textContent = '❚❚ Pausar música';
+  });
+
+  music.addEventListener('pause', () => {
+    musicControl.textContent = '▶ Música';
+  });
+</script>
 
 </body>
 </html>

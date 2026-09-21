@@ -28,9 +28,8 @@
 <style id="music-control-style">
   #musicControl {
     position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 20px;
+    left: 20px;
     z-index: 20;
     border: 1px solid rgba(255, 215, 100, .55);
     background: rgba(10, 8, 4, .72);
@@ -282,22 +281,47 @@
   const music = document.getElementById('music');
   const musicControl = document.getElementById('musicControl');
 
-  async function toggleMusic() {
+  async function startMusic() {
     try {
-      if (music.paused) {
-        await music.play();
-        musicControl.textContent = '❚❚ Pausar música';
-      } else {
-        music.pause();
-        musicControl.textContent = '▶ Música';
-      }
+      await music.play();
+      musicControl.textContent = '❚❚ Pausar música';
+      // Remover escuchadores de interacción una vez reproducida
+      document.removeEventListener('click', startMusicOnUserInteraction);
+      document.removeEventListener('touchstart', startMusicOnUserInteraction);
     } catch (error) {
-      console.error('No se pudo reproducir la música:', error);
+      console.log('Autoplay bloqueado, esperando interacción del usuario.');
       musicControl.textContent = '▶ Música';
     }
   }
 
-  musicControl.addEventListener('click', toggleMusic);
+  async function toggleMusic() {
+    if (music.paused) {
+      await startMusic();
+    } else {
+      music.pause();
+      musicControl.textContent = '▶ Música';
+    }
+  }
+
+  function startMusicOnUserInteraction() {
+    if (music.paused) {
+      startMusic();
+    }
+  }
+
+  // Intentar reprodución al cargar la página
+  window.addEventListener('DOMContentLoaded', () => {
+    startMusic();
+  });
+
+  // Respaldo: Activa la música al hacer cualquier clic/toque en la pantalla
+  document.addEventListener('click', startMusicOnUserInteraction);
+  document.addEventListener('touchstart', startMusicOnUserInteraction);
+
+  musicControl.addEventListener('click', (e) => {
+    e.stopPropagation(); // Evita conflictos con el escuchador global
+    toggleMusic();
+  });
 
   music.addEventListener('play', () => {
     musicControl.textContent = '❚❚ Pausar música';
